@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 let PROTO_PATH = __dirname + "/pb/messages.proto";
 let grpc = require("grpc");
 let protoLoader = require("@grpc/proto-loader");
+
 let packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
@@ -13,11 +14,11 @@ let packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   oneofs: true,
 });
 
+const app = express();
+const port = process.env.PORT || 3000;
 let OrderProto = grpc.loadPackageDefinition(packageDefinition).order;
 
-const app = express();
 app.use(bodyParser.json());
-const port = process.env.PORT || 3000;
 
 mongoose.connect(
   `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@grpc1.7hcbv.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
@@ -32,10 +33,11 @@ db.once("open", function () {
   console.log("Connection Successful!");
 });
 
-var client = new OrderProto.OrderService(
+const client = new OrderProto.OrderService(
   "localhost:50051",
   grpc.credentials.createInsecure()
 );
+
 app.post("/order", async (req, res) => {
   const payload = {
     customerId: req.body.customerId,
