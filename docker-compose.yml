@@ -1,0 +1,41 @@
+version: "3"
+services:
+  customer-service:
+    container_name: customer-service
+    build:
+      context: ./customerService
+      dockerfile: Dockerfile
+    environment:
+      - DB_PASS=
+      - DB_USER=
+      - DB_NAME=
+    ports:
+      - "3000:3000"
+  order-service:
+    container_name: order-service
+    build:
+      context: ./orderService
+      dockerfile: Dockerfile
+    environment:
+      - DB_PASS=
+      - DB_USER=
+      - DB_NAME=
+      - MQ_URL=
+      - MQ_CHANNEL=
+      - RESPONSE_QUEUE=
+      - REQUEST_QUEUE=
+    ports:
+      - "50051:50051"
+  payment-service:
+    container_name: payment-service
+    build:
+      context: ./paymentService
+      dockerfile: Dockerfile
+    environment:
+      - DB_PASS=
+      - DB_USER=
+      - DB_NAME=
+      - MQ_URL=
+      - MQ_CHANNEL=
+      - RESPONSE_QUEUE=
+      - REQUEST_QUEUE=

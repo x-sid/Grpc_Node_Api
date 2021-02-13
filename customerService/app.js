@@ -2,10 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const getDockerHost = require("get-docker-host");
+const isInDocker = require("is-in-docker");
 let PROTO_PATH = __dirname + "/pb/messages.proto";
 let grpc = require("grpc");
 let protoLoader = require("@grpc/proto-loader");
-
 let packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
@@ -14,18 +15,18 @@ let packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   oneofs: true,
 });
 
-const app = express();
-const port = process.env.PORT || 3000;
 let OrderProto = grpc.loadPackageDefinition(packageDefinition).order;
 
+const app = express();
 app.use(bodyParser.json());
+const port = process.env.PORT || 3000;
 
 mongoose.connect(
   `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@grpc1.7hcbv.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
-const db = mongoose.connection;
+var db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "connection error:"));
 
@@ -33,10 +34,33 @@ db.once("open", function () {
   console.log("Connection Successful!");
 });
 
-const client = new OrderProto.OrderService(
-  "localhost:50051",
+const checkDocker = () => {
+  return new Promise((resolve, reject) => {
+    if (isInDocker()) {
+      getDockerHost((error, result) => {
+        if (result) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      });
+    } else {
+      resolve("127.0.0.1");
+    }
+  });
+};
+
+var client = new OrderProto.OrderService(
+  "127.0.0.1:50051",
   grpc.credentials.createInsecure()
 );
+
+checkDocker().then((addr) => {
+  client = new OrderProto.OrderService(
+    `${addr}:50051`,
+    grpc.credentials.createInsecure()
+  );
+});
 
 app.post("/order", async (req, res) => {
   const payload = {
