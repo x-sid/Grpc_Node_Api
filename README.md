@@ -1,2 +1,2 @@
-# grpc_rabbitmq_nodejs
+# Grpc Nodejs API
 using GRPC and Rabbitmq on Nodejs
