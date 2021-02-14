@@ -1,4 +1,4 @@
-# grpc_rabbitmq_nodejs
+# Grpc Nodejs API
 using GRPC and Rabbitmq on Nodejs
 To run this application
 * Clone this repo
