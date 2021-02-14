@@ -41,7 +41,7 @@ const orderProduct = async (call, callback) => {
 
     const newOrder = await order.save();
     const response = {
-      orderId: newOrder.id,
+      orderId: newOrder._id,
       customerId: newOrder.customerId,
       productId: newOrder.productId,
       orderStatus: newOrder.orderStatus,
@@ -60,7 +60,7 @@ const findOrderById = async (call, callback) => {
     let order = await Order.findOne({ _id: request.id }).exec();
 
     const response = {
-      orderId: order.id,
+      orderId: order._id,
       customerId: order.customerId,
       productId: order.productId,
       orderStatus: order.orderStatus,
@@ -77,7 +77,7 @@ const findAllOrder = async (call, callback) => {
     let order = await Order.find({}).exec();
     order = order.map((data) => {
       return {
-        orderId: data.id,
+        orderId: data._id,
         customerId: data.customerId,
         productId: data.productId,
         orderStatus: data.orderStatus,

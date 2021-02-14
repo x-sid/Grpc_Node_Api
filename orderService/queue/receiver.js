@@ -14,7 +14,7 @@ exports.recieveMessage = async (QUEUE) => {
       await channel.consume(
         QUEUE,
         (msg) => {
-          resolve({ err, msg: msg.content });
+          resolve({ err: null, msg: msg.content });
           channel.ack(msg);
           channel.cancel("myconsumer");
         },
@@ -25,7 +25,7 @@ exports.recieveMessage = async (QUEUE) => {
         connect.close();
       }, 500);
     } catch (err) {
-      resolve({ err, msg: null });
+      reject({ err, msg: null });
     }
   });
 };
