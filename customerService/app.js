@@ -21,19 +21,6 @@ const app = express();
 app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
 
-mongoose.connect(
-  `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@grpc1.7hcbv.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
-
-var db = mongoose.connection;
-
-db.on("error", console.error.bind(console, "connection error:"));
-
-db.once("open", function () {
-  console.log("Connection Successful!");
-});
-
 const checkDocker = () => {
   return new Promise((resolve, reject) => {
     if (isInDocker()) {
@@ -69,10 +56,10 @@ app.post("/order", async (req, res) => {
   };
 
   client.orderProduct({ orderRequest: payload }, function (err, response) {
-    if (err) {
+      if (err) {
       return res.status(500).json({
         success: false,
-        message: err,
+        message: "Something went wrong",
         data: [],
       });
     }
