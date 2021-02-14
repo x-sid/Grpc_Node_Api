@@ -6,11 +6,11 @@ const { recieveMessage } = require("./queue/receiver");
 const { sendMessage } = require("./queue/sender");
 
 mongoose.connect(
-  `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@grpc1.7hcbv.mongodb.net/${process.env.GRPC1}?retryWrites=true&w=majority`,
+  `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@grpc1.7hcbv.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
-var db = mongoose.connection;
+const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "connection error:"));
 
@@ -39,12 +39,18 @@ const processPayment = async () => {
 
       await newPayment.save();
 
+      let updateOrder;
       if (newPayment) {
-        const updateOrder = await Order.updateOne(
+        updateOrder = await Order.updateOne(
           { _id: id },
           { $set: { orderStatus: "fulfill" } }
         );
       }
+
+      updateOrder = await Order.updateOne(
+        { _id: id },
+        { $set: { orderStatus: "fulfill" } }
+      );
     }
   }
 };

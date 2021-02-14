@@ -24,7 +24,7 @@ exports.recieveMessage = async (QUEUE) => {
         connect.close();
       }, 500);
     } catch (err) {
-      resolve({ err, msg: null });
+      reject({ err, msg: null });
     }
   });
 };
