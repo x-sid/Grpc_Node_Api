@@ -16,8 +16,8 @@ exports.sendMessage = async (QUEUE, message) => {
       channel.close();
       connect.close();
     }, 500);
-    return isSend;
   } catch (err) {
-    return isSend;
+    
   }
+    return isSend;
 };
