@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const getDockerHost = require("get-docker-host");
 const isInDocker = require("is-in-docker");
@@ -37,7 +36,7 @@ const checkDocker = () => {
   });
 };
 
-var client = new OrderProto.OrderService(
+let client = new OrderProto.OrderService(
   "127.0.0.1:50051",
   grpc.credentials.createInsecure()
 );
@@ -56,7 +55,7 @@ app.post("/order", async (req, res) => {
   };
 
   client.orderProduct({ orderRequest: payload }, function (err, response) {
-      if (err) {
+    if (err) {
       return res.status(500).json({
         success: false,
         message: "Something went wrong",
@@ -107,4 +106,4 @@ app.get("/order", async (req, res) => {
   });
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`App listening on port ${port}!`));

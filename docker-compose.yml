@@ -5,10 +5,6 @@ services:
     build:
       context: ./customerService
       dockerfile: Dockerfile
-    environment:
-      - DB_PASS=
-      - DB_USER=
-      - DB_NAME=
     ports:
       - "3000:3000"
   order-service:
@@ -21,8 +17,6 @@ services:
       - DB_USER=
       - DB_NAME=
       - MQ_URL=
-      - MQ_CHANNEL=
-      - RESPONSE_QUEUE=
       - REQUEST_QUEUE=
     ports:
       - "50051:50051"
@@ -36,6 +30,4 @@ services:
       - DB_USER=
       - DB_NAME=
       - MQ_URL=
-      - MQ_CHANNEL=
-      - RESPONSE_QUEUE=
       - REQUEST_QUEUE=

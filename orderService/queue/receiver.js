@@ -11,15 +11,10 @@ exports.recieveMessage = async (QUEUE) => {
       // Step 3: Assert Queue
       await channel.assertQueue(QUEUE, { durable: true });
       // Step 4: Receive Messages
-      await channel.consume(
-        QUEUE,
-        (msg) => {
-          resolve({ err: null, msg: msg.content });
-          channel.ack(msg);
-          channel.cancel("myconsumer");
-        },
-        { consumerTag: "myconsumer" }
-      );
+      await channel.consume(QUEUE, (msg) => {
+        resolve({ err: null, msg: msg.content });
+        channel.ack(msg);
+      });
       setTimeout(function () {
         channel.close();
         connect.close();
