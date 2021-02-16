@@ -37,23 +37,24 @@ const processPayment = async () => {
 
         let updateOrder;
         if (newPayment) {
-          return (updateOrder = await Order.updateOne(
+          updateOrder = await Order.updateOne(
             { _id: id },
             { $set: { orderStatus: "fulfilled" } }
-          ));
+          );
+          return updateOrder;
         }
 
-        return updateOrder = await Order.updateOne(
+        updateOrder = await Order.updateOne(
           { _id: id },
           { $set: { orderStatus: "unfulfilled" } }
         );
+        return updateOrder
       }
     }
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
 };
-
 
 db.once("open", function () {
   console.log("Connection Successful!");
